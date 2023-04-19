@@ -1,4 +1,4 @@
-let str = String("안녕하세요?Hi?ㅋㅋHi");
+let str = new String("안녕하세요?Hi?ㅋㅋHi");
 
 console.log(str.charAt(2));
 console.log(str.charCodeAt(2));
