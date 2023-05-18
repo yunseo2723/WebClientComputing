@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jQuery Event</title>
+<script src="jquery-3.6.4.js"></script>
+<script>
+    //웹 페이지를 모두 불러오면
+    $(document).ready(function (){
+        var handler = function(event){
+            //h1태그를 생성해서 body태그에 추가
+            $('<h1></h1>')
+                .text($(this).text() + '-new')
+                .click(handler)
+                .appendTo('body');
+            //현재 태그의 이벤트 제거
+            $(this).off();
+        };
+        //h1태그를 클릭하면
+        $('h1').on('click', handler);
+    });
+</script>
+</head>
+<body>
+<h1>Header-1</h1>
+<h1>Header-2</h1>
+<h1>Header-3</h1>
+</body>
+</html>

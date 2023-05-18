@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>이미지 슬라이더</title>
+    <script src="jquery-3.6.4.js"></script>
+    <script>
+        $(document).ready(function(){
+            //변수 선언
+            const width = 500;
+            const height = 500;
+            let current = 0;
+            //함수 선언
+            const moveTo = function(){
+                $('.images').animate({
+                    left: -current*width
+                },1000);
+            };
+            //슬라이더 내부의 이미지 개수를 확인
+            const imageLength = $('.slider').find('.image').length;
+            //슬라이더 버튼을 추가
+            for(let i=0;i<imageLength;i++){
+                $('<button></button>')
+                    .attr('data-position',i)
+                    .text(i)
+                    .click(function(){
+                        current=$(this).attr('data-position');
+                        moveTo();
+                    })
+                    .insertBefore('.slider');
+            }
+            //슬라이더 스타일 설정
+            $('.slider').css({
+                position: 'relative',
+                width: width,
+                height: height,
+                overflow: 'hidden'
+            });
+            $('.images').css({
+                position: 'absolute',
+                width: width*imageLength,
+            });
+            $('.image').css({
+                margin:0,
+                padding:0,
+                width:width,
+                height:height,
+                display:'block',
+                float: 'left'
+            });
+            //3초마다 슬라이더 이동
+            setInterval(function(){
+                current=current+1;
+                current=current%imageLength;
+                moveTo();
+            },3000);
+        });
+    </script>
+</head>
+<body>
+    <div class="slider">
+        <div class="images">
+            <img class="image" src="C:\Users\hayun\Downloads\서경대학교 자료\웹클라이언트컴퓨팅\WebClientComputing\Ch15\부적1.png" />
+            <img class="image" src="C:\Users\hayun\Downloads\서경대학교 자료\웹클라이언트컴퓨팅\WebClientComputing\Ch15\부적2.png" />
+            <img class="image" src="C:\Users\hayun\Downloads\서경대학교 자료\웹클라이언트컴퓨팅\WebClientComputing\Ch15\부적3.png" />
+            <img class="image" src="C:\Users\hayun\Downloads\서경대학교 자료\웹클라이언트컴퓨팅\WebClientComputing\Ch15\부적4.png" />
+            <img class="image" src="C:\Users\hayun\Downloads\서경대학교 자료\웹클라이언트컴퓨팅\WebClientComputing\Ch15\부적1.png" />
+        </div>
+    </div>
+</body>
+</html>
