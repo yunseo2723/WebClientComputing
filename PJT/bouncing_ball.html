@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bouncing Ball</title>
+    <style>
+        canvas{
+            background: yellow;
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        window.onload=function(){
+            let context;
+            let dx = 5;
+            let dy = 5;
+            let y = 20;
+            let x = 20;
+            let a = 0;
+
+            function draw(){
+                let canvas = document.getElementById('myCanvas');
+                let context = canvas.getContext('2d');
+                let gradient = context.createRadialGradient(x-10,y-10,2,x,y,30);
+                gradient.addColorStop(0, "white");
+                gradient.addColorStop(1, "purple");
+                context.fillStyle = gradient;
+                context.clearRect(0,0,300,200);
+                context.beginPath();
+                context.arc(x,y,20,0,Math.PI*2,true);
+                context.closePath();
+                context.fill();
+
+                //공의 중심 좌표
+                document.getElementById('position').innerHTML = "position: x= " + x + ", y= " + x;
+                
+                
+                //벽에 닿으면 반대방향으로 바꾸기
+                
+                if(x < (0+20) || x > (300-20)){
+                    dx = -dx;
+                    a++;
+                }
+                if(y < (0+20) || y > (200-20)){
+                    dy = -dy;
+                    a++;
+                }
+                    
+                //중심좌표 변경
+                x+=dx;
+                y+=dy;
+                document.getElementById('number').innerHTML = "벽에 닿은 횟수: " + a + "번";
+            }
+            //버튼 이벤트
+            btn = document.getElementById('btn');
+            btn.addEventListener('click',e =>{
+                if(e.target.value == "Start"){
+                    playTimer = setInterval(draw, 20);
+                    e.target.value = "Stop";
+                } else{
+                    clearInterval(playTimer);
+                    e.target.value = "Start";
+                }
+                
+            });
+
+            draw();
+        }
+    </script>
+</head>
+<body>
+    <canvas id="myCanvas" width="300" height="200"></canvas>
+    <hr> <input type = "button" id = "btn" value = "Start">
+    <h4 id = "position"></h4>
+    <h4 id = "number"></h4>
+</body>
+</html>

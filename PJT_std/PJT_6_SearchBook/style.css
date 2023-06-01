@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+:root {
+	--light-col: #D9C4B1;
+	--dark-col: #B59B80;
+}
+
+body {
+	background-color: #D9C4B1;
+	background-image: radial-gradient(circle, var(--light-col), var(--dark-col));
+	font-family: 'Muli', sans-serif;
+	min-height: 100vh;
+	text-align: center;
+}

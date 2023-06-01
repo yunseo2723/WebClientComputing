@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        canvas {
+            background: rgb(243, 245, 117);
+        }
+    </style>
+     <script>    
+        window.onload =  function() {
+            let canvas = document.getElementById("myCanvas");        
+            let context = canvas.getContext("2d");
+            let brickRows = 5; 
+            let brickColumns = 13; 
+            let brickWidth = 30;        //벽돌 가로
+            let brickHeight = 30;       //벽돌 세로
+            let brickPadding = 10;      //벽돌 간 간격 
+            let brickStartX = 50;      //제일 좌상 벽돌의 시작 X, Y좌표
+            let brickStartY = 70; ;
+            let bricks = new Array(brickRows); 
+            let ball = { 
+                x: canvas.width / 2,    //처음 로딩했을때 공의 X좌표
+                y: canvas.height - 10, //처음 로딩했을때 공의 Y좌표(많이 뺄수록 위에서 시작)
+                dx: 2,                  //dx가 0이면 수직운동   공이 한번에 얼마만큼의 X좌표를 이동하는지 표현 => 숫자가 커질수록 빨라짐
+                dy: -2,                 //dy가 0이면 수평운동
+                radius: 10,
+                //공 그리기
+                draw: function () { 
+                    context.beginPath();        //그림을 그릴때 시작 선언
+                    context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);   //arc(공의 중짐 좌표, 반지름, 3시 방향 Start 원의 보여질부분의 시작 각도, 원의 보여질 부분의 끝 각도), Math.PI = 180도 기준
+                    context.fillStyle = "#000000";  //공 색상
+                    context.fill();         //fill = 채우기, stroke = 테두리
+                    context.closePath();    //그리기 종료
+                    
+                }
+            };
+            let paddle = { 
+                height: 10, //막대기 높이
+                width: 90,  //막대기 길이
+                x: 300,     //막대기 시작 X좌표 => canvas.width / 2 로 대신표기 가능
+                draw: function () { 
+                    context.beginPath();
+                    context.rect(this.x, canvas.height - this.height, this.width, this.height); //rect(X좌표, Y좌표, 가로길이, 세로길이)
+                    context.fillStyle = "blue";
+                    context.fill();
+                    context.closePath();
+                }
+            };
+            class Brick { 
+                constructor(x, y, status) { 
+                    this.x = x;
+                    this.y = y;
+                    this.status = status;
+                }
+                draw() { 
+                    if (this.status == 1) {
+                        context.beginPath();
+                        context.rect(this.x, this.y, brickWidth, brickHeight);
+                        context.fillStyle = "red";
+                        context.fill();
+                        context.closePath();
+                    }
+                }
+                check() { 
+                    if (this.status == 1) { 
+                        if (ball.x > this.x && ball.x < this.x + brickWidth                 //공의 x좌표가 벽돌의 맨 왼쪽 X좌표보다 크고 맨 오른쪽 X좌표보다 작고
+                            && ball.y > this.y && ball.y < this.y + brickHeight) {          //공이 벽돌의 윗부분이나 아랫부분에 접촉이 있을때
+                            ball.dy = -ball.dy;                                             //공의 Y좌표값의 부호를 바꿔줌으로써 공이 반대방향으로 가도록 한다
+                            this.status = 0;                                                //status값 = 0 세트 => 벽돌을 없애버림
+                        }
+                        else if ((ball.x==this.x || ball.x==this.x+brickWidth)              //공이 벽돌의 좌, 우에 부딪혔을 때에도 튕기도록 하는 구문
+                                && (ball.y < this.y+brickHeight&& ball.y > this.y)
+                        ) {
+                            ball.dx = -ball.dx;
+                            this.status = 0;
+                        }
+                    }
+                }
+                
+            }
+
+
+            function init() {             
+                document.addEventListener("mousemove", mouseHandler, false);
+                for (let r = 0; r < brickRows; r++) {           //벽돌의 세로 개수
+                    bricks[r] = new Array(brickColumns);        
+                    for (let c = 0; c < brickColumns; c++) {    //벽돌의 가로 개수              
+                        let brickX = (c * (brickWidth + brickPadding)) + brickStartX;   //c * (벽돌 가로 길이 + 간격 길이) + 벽돌 시작 X좌표
+                        let brickY = (r * (brickHeight + brickPadding)) + brickStartY;  //c * (벽돌 세로 길이 + 간격 길이) + 벽돌 시작 Y좌표
+                        bricks[r][c] = new Brick(brickX, brickY, 1);                    //Brick 클래스에 벽돌의 시작 X좌표와 Y좌표, status = 1을 지정함으로써 생성
+                    }
+                }
+            }
+            function mouseHandler(e) { 
+                let x = e.clientX - canvas.offsetLeft;      //clientX : 마우스를 수평으로 움직일때 막대기도 수평으로 움직이게 해줌, clientY : 마우스를 수직으로 움직일때 막대기는 수평으로 움직임
+                if (x > 0 && x < canvas.width) {
+                    paddle.x = x - paddle.width / 2;        //마우스 커서의 위치를 막대기의 정중앙에 위치하게 해줌
+                }
+            }
+            function gameLoop() { 
+                context.clearRect(0, 0, canvas.width, canvas.height); //clearRect(사각형의 좌상 좌표 , 사각형의 우하 좌표)
+                ball.draw();        //공그리기 , 없으면 공이 안보임
+                paddle.draw();      //막대기그리기 , 없으면 막대기가 안보임
+                for (let r = 0; r < brickRows; r++) {
+                    for (let c = 0; c < brickColumns; c++) { 
+                        bricks[r][c].check();           //체크 후 벽돌을 없앰 
+                        bricks[r][c].draw();            //벽돌 그리기
+                    }
+                }
+            
+                if (ball.x + ball.dx > canvas.width - ball.dx   //공이 다음 프레임에 위치할 좌표 > 전체 가로길이에서 프레임당 이동량만큼 뺀 값 => 공이 화면 오른쪽 밖으로 나가는 경우
+                    || ball.x + ball.dx < ball.radius) {        //공이 다음 프레임에 위치할 좌표 < 공의 반지름 => 공이 화면 왼쪽 밖으로 조금이라도 나가는 경우 => 공의 X좌표값은 항상 공의 반지름보다는 커야함
+                    ball.dx = -ball.dx;
+                }
+            
+                if (ball.y + ball.dy < ball.radius) {       //공이 화면 위쪽벽에 닿는 경우
+                    ball.dy = -ball.dy;
+                }
+                
+                else if (ball.y + ball.dy > canvas.height - ball.radius) {      //공의 다음 프레임 Y좌표가 화면의 바닥에서 반지름만큼 뻰 값보다 클 때(아래에 위치할 때)
+                    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {    //공이 막대기에 닿았을때
+                        ball.dy = -ball.dy; 
+                    }
+                    else {
+                        clearInterval(interval);            //바닥에 닿았을때
+                        
+                        }; 
+                    }
+                
+                ball.x += ball.dx;      //공이 벽에 닿지 않는 경우에 프레임별로 계속 이동시킨다
+                ball.y += ball.dy;
+            }
+            init();
+            setInterval(gameLoop, 10);  //10ms마다 gameLoop함수 테스트 진행
+            
+    }
+    </script>
+
+</head>
+
+<body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+</body>
+</html>
