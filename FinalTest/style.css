@@ -1,0 +1,71 @@
+/* 전체 스타일 */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 헤더 스타일 */
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1px;
+  text-align: center;
+}
+
+/* 내비게이션 스타일 */
+nav {
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  
+}
+
+nav ul li a {
+  color: #333;
+  padding: 10px;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* 섹션 스타일 */
+/* 이미지 스타일 */
+
+/* 푸터 스타일 */
+footer {
+  background-color: BLUE;
+  color: #fff;
+  padding: 1px;
+  text-align: center;
+}
+
+.image-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px; /* 사진 간격을 조절할 간격값 설정 */
+  margin-top: 20px; /* 위쪽 간격 조절 */
+  margin-bottom: 30px; /* 아래쪽 간격 조절 */
+}
+
+.image-row img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+}
+h2 {
+  text-align: center;
+}
